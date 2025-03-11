@@ -1,23 +1,19 @@
-  // Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Containers/Map.h"
-#include "LoggerActor.generated.h"
-
+#include "TSVLogger.generated.h"
 
 UCLASS()
-class QUICKSTART_API ALoggerActor : public AActor
+class VRSTART_API ATSVLogger : public AActor
 {
 	GENERATED_BODY()
-
-
-
+	
 public:	
 	// Sets default values for this actor's properties
-	ALoggerActor();
+	ATSVLogger();
 
 protected:
 	// Called when the game starts or when spawned
@@ -31,15 +27,25 @@ protected:
 	void LogLabels();
 	bool Async;
 	void Log();
-	
-	
-public:	
+
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	UFUNCTION(BlueprintCallable)
-	void AddEntry(FString k, FString v = "", bool resetEachFrame = false);
+	void AddEntry(FString k, FString defVal = "", bool resetEachFrame = false);
 	UFUNCTION(BlueprintCallable)
 	void UpdateEntry(FString k, FString v = "");
+	UFUNCTION(BlueprintCallable)
+	void UpdateVector(FString k, FVector v);
+	UFUNCTION(BlueprintCallable)
+	void UpdateDouble(FString k, double v);
+	UFUNCTION(BlueprintCallable)
+	void UpdateFloat(FString k, float v);
+	UFUNCTION(BlueprintCallable)
+	void UpdateInt(FString k, int v);
+	UFUNCTION(BlueprintCallable)
+	void InitOrReset();
 	UFUNCTION(BlueprintCallable)
 	void StartLogging(FString id, bool async = false);
 	UFUNCTION(BlueprintCallable)
