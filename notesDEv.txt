@@ -1,0 +1,6 @@
+Disable LiveCoding (and maybe Hotreload)
+uninstall incredibuild from vs
+In VS: solution configuration (dropdown in toolbar) to development editor
+
+
+Lower FPS when running from blueprint editor

@@ -7,7 +7,8 @@ namespace {
 
 	FString NumStringCapped(float f)
 	{
-		return FString::SanitizeFloat(f, 4).Left(6);
+		//return FString::SanitizeFloat(f, 4).Left(6);
+		return FString::SanitizeFloat(f);
 	}
 
 }
@@ -124,7 +125,7 @@ void ATSVLogger::UpdateEntry(FString k, FString v)
 
 void ATSVLogger::UpdateVector(FString k, FVector v)
 {
-	UpdateEntry(k, "(" + NumStringCapped(v.X) + "," + NumStringCapped(v.Y) + "," + NumStringCapped(v.Z) + ")");
+	UpdateEntry(k, NumStringCapped(v.X) + "," + NumStringCapped(v.Y) + "," + NumStringCapped(v.Z));
 }
 
 
