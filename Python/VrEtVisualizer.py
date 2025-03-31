@@ -1,9 +1,12 @@
+
+
 import pathlib
 import pandas as pd
 import os
 from IDT_alg_VR_centred import IDTVR
 import unreal
 import numpy as np
+import glob
 
 eas = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
 levelLibrary = unreal.EditorLevelLibrary()
@@ -19,6 +22,21 @@ def deleteExistingVisualizations():
     for fixActor in fixActors:
         eas.destroy_actor(fixActor)
 
+
+def getLatestInputFile():
+
+    list_of_files = glob.glob(unreal.Paths.project_content_dir() + "VRETLogs/" + "*.tsv") # * means all if need specific format then *.csv
+    latest_file = max(list_of_files, key=os.path.getctime)
+    path_parts = latest_file.split("\\") 
+    return path_parts[-1]
+
+def getLatestOutputFile():
+
+    list_of_files = glob.glob(unreal.Paths.project_content_dir() + "VRETLogs/withCalculatedFixations/" + "*.tsv") # * means all if need specific format then *.csv
+    latest_file = max(list_of_files, key=os.path.getctime)
+    path_parts = latest_file.split("\\") 
+    return path_parts[-1]
+
 def readETData(fileName, time_th, disp_th, freq_th, useFocal):
 
     # delete existing fixation objects in scene
@@ -26,7 +44,7 @@ def readETData(fileName, time_th, disp_th, freq_th, useFocal):
     
     deleteExistingVisualizations()
     
-    df_et = pd.read_csv(unreal.Paths.project_content_dir() + "/VRETLogs/" + fileName, sep="\t",index_col=False )
+    df_et = pd.read_csv(unreal.Paths.project_content_dir() + "VRETLogs/" + fileName, sep="\t",index_col=False )
     
     df_et = df_et[(df_et["Valid"] == "T")]
     
@@ -59,8 +77,11 @@ def readETData(fileName, time_th, disp_th, freq_th, useFocal):
     
     basename, ext = fileName.rsplit(".", maxsplit=1)
     new_file_name =  basename + "_w_fixations." + ext 
-      
-    df_et_w_fixations.to_csv(unreal.Paths.project_content_dir() + "/VRETLogs/" + new_file_name, sep="\t") 
+    
+    outDir = unreal.Paths.project_content_dir() + "VRETLogs/withCalculatedFixations/"
+    pathlib.Path(outDir).mkdir(parents=True, exist_ok=True)
+     
+    df_et_w_fixations.to_csv(outDir+new_file_name, sep="\t") 
     
     return new_file_name
 
@@ -78,7 +99,9 @@ def visualizeFixations(fileName):
     
     fixations = visActor.get_editor_property('Fixations')   
     
-    df_et_w_fixations = pd.read_csv(unreal.Paths.project_content_dir() + "/VRETLogs/" + fileName, sep="\t",index_col=False )
+    outDir = unreal.Paths.project_content_dir() + "VRETLogs/withCalculatedFixations/"
+    
+    df_et_w_fixations = pd.read_csv(outDir + fileName, sep="\t",index_col=False )
     print("Shape", df_et_w_fixations.shape)
     print("Columns", df_et_w_fixations.columns)
     
@@ -109,8 +132,6 @@ def visualizeFixations(fileName):
     saccsAndFixes['dY'] = 0-saccsAndFixes['et_y'].diff(-1) 
     saccsAndFixes['dZ'] = 0-saccsAndFixes['et_z'].diff(-1) 
     saccsAndFixes['distance'] = np.sqrt(saccsAndFixes['dX']**2 + saccsAndFixes['dY']**2 + saccsAndFixes['dZ']**2)
-    
-    saccsAndFixes.to_csv(unreal.Paths.project_content_dir() + "/VRETLogs/" + "hej.tsv", sep="\t") 
     
     for index, row in saccsAndFixes.iterrows():
         if (row['fixOrSacc'] == "Saccade"):

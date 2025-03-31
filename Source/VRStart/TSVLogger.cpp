@@ -159,12 +159,18 @@ void ATSVLogger::StartLogging(FString id, bool async)
 {
 	UE_LOG(LogTemp, Warning, TEXT("StartLog called"));
 	
-	FString ProjectSavedDirectory = FPaths::ProjectSavedDir();
+	FString ProjectSavedDirectory = FPaths::ProjectContentDir() + "/VRETLogs";
+	IPlatformFile& platformFile = FPlatformFileManager::Get().GetPlatformFile();
+
+	if (!platformFile.DirectoryExists(*ProjectSavedDirectory))
+	{
+		platformFile.CreateDirectory(*ProjectSavedDirectory);
+	}
 	UE_LOG(LogTemp, Warning, TEXT("FilePaths: ProjectSavedDir: %s"), *ProjectSavedDirectory);
 	
 	
 	IPlatformFile& file = FPlatformFileManager::Get().GetPlatformFile();
-	const TCHAR* directory = *ProjectSavedDirectory.Append( *id);
+	const TCHAR* directory = *ProjectSavedDirectory.Append("//").Append(*id);
 	fileHandle = file.OpenWrite(directory);
 	LogLabels();
 	Async = async;

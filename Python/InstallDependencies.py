@@ -2,11 +2,7 @@ import unreal
 import subprocess
 import pkg_resources
 import pathlib
-import pandas as pd
 import os
-from IDT_alg_VR_centred import IDTVR
-import unreal
-import numpy as np
 
 
 print(pathlib.Path().resolve())
@@ -39,15 +35,16 @@ def pip_install(packages):
 
     return proc.poll()
 
-# Put here your required python packages
-required = {'numpy','pandas','matplotlib','notebook','numba'}
-installed = {pkg.key for pkg in pkg_resources.working_set}
-missing = required - installed
+def installDependencies():
+    # Put here your required python packages
+    required = {'numpy','pandas','numba'}
+    installed = {pkg.key for pkg in pkg_resources.working_set}
+    missing = required - installed
 
-if len(missing) > 0:
-    print(missing)
-    #pip_install({'notebook'})
-    #pip_install(missing)
-else:
-    unreal.log("All python requirements already satisfied")
-    
+    if len(missing) > 0:
+        print(missing)
+        #pip_install({'notebook'})
+        pip_install(missing)
+    else:
+        unreal.log("All python requirements already satisfied")
+        
