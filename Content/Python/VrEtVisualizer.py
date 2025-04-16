@@ -54,8 +54,10 @@ def readETData(fileName, time_th, disp_th, freq_th, useFocal):
     df_et["time"] = df_et["time"] - start_time
     
     
-    
+    # head pos and gaze origin should be identical
     df_et[['head_pose_x','head_pose_y','head_pose_z']] = df_et['GazeOrigin'].str.split(',',expand=True).astype(float)
+    df_et[['head_rot_x','head_rot_y','head_rot_z', 'head_rot_w']] = df_et['HeadRot'].str.split(',',expand=True).astype(float)
+    
     if (useFocal):
         df_et[['et_x','et_y','et_z']] = df_et['FixPoint'].str.split(',',expand=True).astype(float)
     else:
@@ -96,6 +98,7 @@ def visualizeFixations(fileName):
     times = visActor.get_editor_property('times')
     gazePositions = visActor.get_editor_property('GazePositions')
     headPositions = visActor.get_editor_property('HeadPositions')
+    headRoations = visActor.get_editor_property('HeadRotations')
     
     fixations = visActor.get_editor_property('Fixations')   
     
@@ -110,6 +113,7 @@ def visualizeFixations(fileName):
         times.append(row['time'])
         gazePositions.append(unreal.Vector(row['et_x'],row['et_y'],row['et_z']))
         headPositions.append(unreal.Vector(row['head_pose_x'],row['head_pose_y'],row['head_pose_z']))
+        headRoations.append(unreal.Quat(row['head_rot_x'],row['head_rot_y'],row['head_rot_z'],row['head_rot_w']))
         
     
     
@@ -171,23 +175,7 @@ def scrub(value, visActor):
     
     levelLibrary.editor_invalidate_viewports()
     
-    '''
-    children =  visActor.get_all_child_actors(True)
-    for a in children:
-        actorLabel = a.get_actor_label()
-        print(actorLabel)
-        if (actorLabel == 'head'):
-            a.set_actor_location(headPositions[idx], False, False)
-        elif (actorLabel == 'gaze'):
-            a.set_actor_location(gazePositions[idx], False, False)
-    '''
-    #head = visActor.get_editor_property('head')
-    #gaze = visActor.get_editor_property('gaze')
-    
-    
-    
-    #head.child_actor.set_actor_location(headPositions[i], False, False)
-    #gaze.child_actor.set_actor_location(gazePositions[i], False, False)
+    return times[idx]
     
     
     

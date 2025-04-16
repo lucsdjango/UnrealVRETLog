@@ -31,12 +31,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetDebugShape(UStaticMeshComponent* shape);
 	UFUNCTION(BlueprintCallable)
-	void UpdateETData(float deltaTime, FVector origin, FVector dir, float conf, FVector fixPoint, bool lBlink, bool rBlink, float lPupil, float rPupil, FVector lOrigin, FVector lDir, FVector rOrigin, FVector rDir, bool valid);
+	void UpdateETData(float deltaTime, FVector headPos, FQuat headRot, FVector gazeOrigin, FVector dir, float conf, FVector fixPoint, bool lBlink, bool rBlink, float lPupil, float rPupil, FVector lOrigin, FVector lDir, FVector rOrigin, FVector rDir, bool valid);
 	UFUNCTION(BlueprintCallable)
 	void UpdateHits(FVector pos, FString name);
 	UFUNCTION(BlueprintCallable)
 	void CalculateAndUpdateHits(FVector pos, FVector dir, FString filterTag);
-	//void UpdateETValues(Vector GazeOrigin);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ATSVLogger* Logger;
 	TArray<FString> Labels;

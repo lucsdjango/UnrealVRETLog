@@ -45,6 +45,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UpdateInt(FString k, int v);
 	UFUNCTION(BlueprintCallable)
+	void UpdateQuat(FString k, FQuat q);
+	UFUNCTION(BlueprintCallable)
 	void InitOrReset();
 	UFUNCTION(BlueprintCallable)
 	void StartLogging(FString id, bool async = false);

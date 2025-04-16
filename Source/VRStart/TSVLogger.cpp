@@ -1,19 +1,11 @@
+
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "TSVLogger.h"
 
-namespace {
 
-	FString NumStringCapped(float f)
-	{
-		//return FString::SanitizeFloat(f, 4).Left(6);
-		return FString::SanitizeFloat(f);
-	}
-
-}
-
-// Sets default values
+// Constructor
 ATSVLogger::ATSVLogger()
 {
 	
@@ -32,8 +24,11 @@ ATSVLogger::ATSVLogger()
 void ATSVLogger::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Fixed framerate is not working realiably in VR preview mode.
 	//GEngine->FixedFrameRate = 150.0;
 	//GEngine->bUseFixedFrameRate = true;
+	
 	startSeconds = FPlatformTime::Seconds();
 	
 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
@@ -45,16 +40,16 @@ void ATSVLogger::Tick(float DeltaTime)
 
 	Super::Tick(DeltaTime);
 	FString s = (Logging ? "true" : "false");
-	//UE_LOG(LogTemp, Warning, TEXT("hej"));
+	
 	if (Logging == true)
 	{
-		UpdateEntry("time", NumStringCapped(FPlatformTime::Seconds() - startSeconds)); // Make helper function
-		if (FMath::RandRange(0, 100) > 90)
-			UpdateEntry("test", "hej");
+		UpdateEntry("time", FString::SanitizeFloat(FPlatformTime::Seconds() - startSeconds)); // Make helper function
+
 		if (!Async && Logging && fileHandle)
 		{
 			Log();
 		}
+		// Reseting to deafault values for columns added with argument resetEachFrame = true
 		for (auto& Elem : ResetColumns)
 		{
 			UpdateEntry(Elem.Key, Elem.Value);
@@ -82,7 +77,6 @@ void ATSVLogger::LogLabels()
 // Called once every tick after logging started, unless async logging mode enabled
 void ATSVLogger::Log()
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Log called"));
 
 	FString line = "";
 	for (auto& Elem : LogColumns)
@@ -91,7 +85,7 @@ void ATSVLogger::Log()
 	}
 	line.Append("\n");
 	fileHandle->Write((const uint8*)TCHAR_TO_ANSI(*line), line.Len());
-	//UE_LOG(LogTemp, Warning, TEXT("Values written"));
+
 }
 
 void ATSVLogger::AsyncLog()
@@ -107,6 +101,7 @@ void ATSVLogger::AsyncLog()
 	}
 }
 
+// Columns should be added before StartLogging is called
 void ATSVLogger::AddEntry(FString k, FString v, bool resetEachFrame)
 {
 	LogColumns.Add(k, v);
@@ -125,24 +120,27 @@ void ATSVLogger::UpdateEntry(FString k, FString v)
 
 void ATSVLogger::UpdateVector(FString k, FVector v)
 {
-	UpdateEntry(k, NumStringCapped(v.X) + "," + NumStringCapped(v.Y) + "," + NumStringCapped(v.Z));
+	UpdateEntry(k, FString::SanitizeFloat(v.X) + "," + FString::SanitizeFloat(v.Y) + "," + FString::SanitizeFloat(v.Z));
 }
-
-
 
 void ATSVLogger::UpdateDouble(FString k, double v)
 {
-	UpdateEntry(k, NumStringCapped(v));
+	UpdateEntry(k, FString::SanitizeFloat(v));
 }
 
 void ATSVLogger::UpdateFloat(FString k, float v)
 {
-	UpdateEntry(k, NumStringCapped(v));
+	UpdateEntry(k, FString::SanitizeFloat(v));
 }
 
 void ATSVLogger::UpdateInt(FString k, int v)
 {
 	UpdateEntry(k, FString::FromInt(v));
+}
+
+void ATSVLogger::UpdateQuat(FString k, FQuat q)
+{
+	UpdateEntry(k, FString::SanitizeFloat(q.X) + "," + FString::SanitizeFloat(q.Y) + "," + FString::SanitizeFloat(q.Z)+ "," + FString::SanitizeFloat(q.W));
 }
 
 void ATSVLogger::InitOrReset()
@@ -154,7 +152,7 @@ void ATSVLogger::InitOrReset()
 	AddEntry("test", "default", true);
 }
 
-
+// Called after adding columns with calls to AddEntry(..). Tab separated file is created with id argument as file name prefix.
 void ATSVLogger::StartLogging(FString id, bool async)
 {
 	UE_LOG(LogTemp, Warning, TEXT("StartLog called"));
@@ -177,8 +175,7 @@ void ATSVLogger::StartLogging(FString id, bool async)
 	Logging = true;
 }
 
-
-
+// Called when stopping run, ensuring buffer is written to file and file writer is closed.
 void ATSVLogger::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	UE_LOG(LogTemp, Warning, TEXT("EndPlay"));
