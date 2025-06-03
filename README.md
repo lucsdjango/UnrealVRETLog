@@ -2,6 +2,6 @@ Unreal 5.4 project, based on the VR starter assets, with added support for loggi
 
 Dependencies:
 - Unreal Engine 5.4
-- [Varjo OpenXR plugin] (https://fab.com/s/5761f1f00efa)
+- [Varjo OpenXR plugin](https://fab.com/s/5761f1f00efa)
 - [Visual Studio Integration Tool](https://fab.com/s/81403d127574)
 
