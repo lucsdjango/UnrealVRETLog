@@ -32,8 +32,13 @@ Unreal 5.4 project, based on the VR starter assets, with added support for loggi
   
 
 **Components**:
+- VRETLogger
+  - Blueprint class that checks that tracking is enabled, starts logging after a specified delay, and updates tracking data to log every tick.
+  - Supports logging more data (focal depth, stereo gaze, pupil diameter, eyeblinks) than is currently exposed by the VarjoXR plugin.
+- VRLogger
+  - C++ class that registers tracking variables (columns) to log, updates values and checks for gaze vector intersections in the scene by calls to public function UpdateETData.
 - TSVLogger
-  - C++ class (Actor subclass) that handles logging of data organized in columns (variables) and rows (ticks) as tab separated text files.
+  - C++ class that handles logging of data organized in columns (variables) and rows (ticks) as tab separated text files.
   - Can log custom varibles (besides the tracking data) by calling AddEntry() (before StartLogging() is called in VRETLogging) and then one of the Update functions at every tick. All these functions are callable from blueprints. For an example, see LogTest blueprint.
  
 
