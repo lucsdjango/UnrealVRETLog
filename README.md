@@ -28,7 +28,7 @@ Unreal 5.4 project, based on the VR starter assets, with added support for loggi
 - Check that a new file has been created under /Content/VRETLogs/withCalculatedFixations/, and its name is in the Processed Log File entry field.
 - Click Visualize Fixations.
 - Note that an ETVisualization object with blue spheres representing fixations as children appears in the level.
-- Scrub the slider to replay the movement of the headset and appearance of fixations.
+- Scrub the slider or play the level from the editor to replay the movement of the headset and appearance of fixations.
   
 
 **Components**:
