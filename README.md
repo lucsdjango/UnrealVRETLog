@@ -14,7 +14,7 @@ Unreal 5.4 project, based on the VR starter assets, with added support for loggi
 - Add VRETLogger object to level.
 - Set VRLogger field on VRETLogger to VRLogger instance.
 - Set file prefix to desired log file name.
-- Wear headset with eyetracking enabled (tested on Varjo).
+- Wear headset with eyetracking enabled (tested on Varjo and Meta Quest Pro).
 - Set DebugSphere > Rendering > Visible to show/hide indication of gaze vectors intersection with level geometry.
 - Run Level in VRPreview mode.
 - Inspect log file in /Content/VRETLogs/
